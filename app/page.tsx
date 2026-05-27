@@ -5,7 +5,7 @@ import * as XLSX from "xlsx";
 
 const CATEGORIES = ["Food","Housing","Transport","Health","Shopping","Entertainment","Electricity","Water","Internet","Groceries","Allowance","Netflix/Spotify","Miscellaneous","Other"];
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-const COLORS = ["#6366f1","#22c55e","#f59e0b","#ef4444","#3b82f6","#ec4899","#14b8a6"];
+const COLORS = ["#6366f1","#22c55e","#f59e0b","#ef4444","#3b82f6","#ec4899","#14b8a6","#f97316","#8b5cf6","#06b6d4","#84cc16","#e11d48","#0ea5e9","#a855f7"];
 
 type Expense = { id: string; name: string; amount: number; category: string; };
 type MonthData = { salary: number; expenses: Expense[]; };
@@ -130,7 +130,7 @@ export default function Home() {
   }
   if (remaining > 0 && percent < 50) tips.push(`✅ ₱${remaining.toFixed(2)} left this month!`);
 
-  const s = { input: { width:"100%", padding:"10px 14px", borderRadius:8, border:"1px solid #2d3748", background:"#1a202c", color:"#fff", fontSize:15, boxSizing:"border-box" as const, marginBottom:12 }, btn: (bg: string) => ({ padding:"10px 22px", background:bg, border:"none", color:"#fff", borderRadius:8, cursor:"pointer", fontWeight:"bold" as const, fontSize:14 }) };
+  const s = { btn: (bg: string) => ({ padding:"10px 22px", background:bg, border:"none", color:"#fff", borderRadius:8, cursor:"pointer", fontWeight:"bold" as const, fontSize:14 }) };
 
   if (!loggedIn) return (
     <div style={{ minHeight:"100vh", background:"linear-gradient(135deg,#0f172a,#1e293b)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"sans-serif" }}>
@@ -140,8 +140,8 @@ export default function Home() {
           <h1 style={{ color:"#fff", fontSize:24, fontWeight:"bold", margin:"8px 0 4px" }}>Expense Tracker</h1>
           <p style={{ color:"#64748b", fontSize:13 }}>Sign in to continue</p>
         </div>
-        <input value={loginUser} onChange={e => setLoginUser(e.target.value)} placeholder="Username" style={s.input} />
-        <input value={loginPass} onChange={e => setLoginPass(e.target.value)} placeholder="Password" type="password" style={s.input} onKeyDown={e => e.key === "Enter" && handleLogin()} />
+        <input value={loginUser} onChange={e => setLoginUser(e.target.value)} placeholder="Username" style={{ width:"100%", padding:"10px 14px", borderRadius:8, border:"1px solid #2d3748", background:"#1a202c", color:"#fff", fontSize:15, boxSizing:"border-box", marginBottom:12 }} />
+        <input value={loginPass} onChange={e => setLoginPass(e.target.value)} placeholder="Password" type="password" style={{ width:"100%", padding:"10px 14px", borderRadius:8, border:"1px solid #2d3748", background:"#1a202c", color:"#fff", fontSize:15, boxSizing:"border-box", marginBottom:12 }} onKeyDown={e => e.key === "Enter" && handleLogin()} />
         {loginError && <div style={{ color:"#ef4444", fontSize:13, marginBottom:12 }}>{loginError}</div>}
         <button onClick={handleLogin} style={{ ...s.btn("#6366f1"), width:"100%", padding:"12px" }}>Sign In</button>
         <p style={{ color:"#475569", fontSize:12, textAlign:"center", marginTop:16 }}>Default: admin / 1234</p>
@@ -151,7 +151,6 @@ export default function Home() {
 
   return (
     <div style={{ minHeight:"100vh", background:"#0f172a", color:"#f1f5f9", fontFamily:"sans-serif" }}>
-      {/* Navbar */}
       <div style={{ background:"#1e293b", borderBottom:"1px solid #334155", padding:"0 24px", display:"flex", alignItems:"center", justifyContent:"space-between", height:60 }}>
         <div style={{ fontWeight:"bold", fontSize:18 }}>💰 Expense Tracker</div>
         <div style={{ display:"flex", gap:8 }}>
@@ -163,14 +162,12 @@ export default function Home() {
       </div>
 
       <div style={{ maxWidth:960, margin:"0 auto", padding:"24px 16px" }}>
-        {/* Month Nav */}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:20, marginBottom:24 }}>
           <button onClick={prevMonth} style={{ background:"#1e293b", border:"none", color:"#fff", padding:"8px 16px", borderRadius:8, cursor:"pointer", fontSize:18 }}>◀</button>
           <span style={{ fontSize:20, fontWeight:"bold" }}>{MONTHS[currentMonth]} {currentYear}</span>
           <button onClick={nextMonth} style={{ background:"#1e293b", border:"none", color:"#fff", padding:"8px 16px", borderRadius:8, cursor:"pointer", fontSize:18 }}>▶</button>
         </div>
 
-        {/* DASHBOARD */}
         {tab === "dashboard" && <>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:12, marginBottom:16 }}>
             {[
@@ -185,14 +182,14 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <div style={{ background:"#1e293b", borderRadius:12, padding:20, marginBottom:16 }}>
+          {monthData.salary > 0 && <div style={{ background:"#1e293b", borderRadius:12, padding:20, marginBottom:16 }}>
             <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8, fontSize:13, color:"#94a3b8" }}>
               <span>Budget used</span><span style={{ color:barColor }}>{percent.toFixed(0)}%</span>
             </div>
             <div style={{ background:"#334155", borderRadius:999, height:12 }}>
               <div style={{ width:`${percent}%`, background:barColor, height:12, borderRadius:999, transition:"width 0.4s" }} />
             </div>
-          </div>
+          </div>}
           {tips.length > 0 && <div style={{ background:"#1e293b", borderRadius:12, padding:16, marginBottom:16, display:"flex", gap:16, flexWrap:"wrap" as const }}>
             {tips.map((t,i) => <span key={i} style={{ fontSize:13 }}>{t}</span>)}
           </div>}
@@ -223,7 +220,6 @@ export default function Home() {
           </div>
         </>}
 
-        {/* EXPENSES TABLE */}
         {tab === "expenses" && <>
           <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:12 }}>
             <button onClick={exportExcel} style={s.btn("#22c55e")}>⬇ Export Excel</button>
@@ -263,7 +259,6 @@ export default function Home() {
           </div>}
         </>}
 
-        {/* CHARTS */}
         {tab === "charts" && <>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))", gap:16 }}>
             <div style={{ background:"#1e293b", borderRadius:12, padding:20 }}>
@@ -271,7 +266,7 @@ export default function Home() {
               {pieData.length === 0 ? <div style={{ color:"#64748b", textAlign:"center", padding:40 }}>No data yet</div> :
               <ResponsiveContainer width="100%" height={260}>
                 <PieChart>
-                  <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label={({ name, percent }) => `${name} ${(percent*100).toFixed(0)}%`}>
+                  <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label={({ name, percent: p }) => `${name} ${((p||0)*100).toFixed(0)}%`}>
                     {pieData.map((_, i) => <Cell key={i} fill={COLORS[i%COLORS.length]} />)}
                   </Pie>
                   <Tooltip formatter={(v: number) => `₱${v.toFixed(2)}`} />
